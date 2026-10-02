@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
 const navItems = [
   { to: '/', label: 'Início', exact: true },
@@ -11,6 +12,7 @@ const navItems = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, logout } = useApp();
 
   return (
     <header className="sticky top-0 z-50 bg-park-blue shadow-lg shadow-park-blue/20">
@@ -52,6 +54,38 @@ export default function Header() {
             ))}
           </nav>
 
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-white text-sm font-semibold">
+                  Olá, {user.name}
+                </span>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold rounded-lg transition-all"
+                >
+                  Sair
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-white text-sm font-semibold hover:bg-white/10 rounded-lg transition-all"
+                >
+                  Entrar
+                </Link>
+                <Link
+                  to="/cadastro"
+                  className="px-4 py-2 bg-park-yellow hover:bg-yellow-400 text-park-blue-dark text-sm font-bold rounded-lg transition-all"
+                >
+                  Cadastrar
+                </Link>
+              </>
+            )}
+          </div>
+
           {/* Mobile Hamburger */}
           <button
             className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -75,7 +109,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-64' : 'max-h-0'}`}
+        className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-80' : 'max-h-0'}`}
       >
         <nav className="px-4 pb-4 flex flex-col gap-1 bg-park-blue-dark">
           {navItems.map((item) => (
@@ -95,6 +129,40 @@ export default function Header() {
               {item.label}
             </NavLink>
           ))}
+          <div className="border-t border-white/10 my-2" />
+          {user ? (
+            <>
+              <div className="px-4 py-2 text-white text-sm font-semibold">
+                Olá, {user.name}
+              </div>
+              <button
+                onClick={() => {
+                  logout();
+                  setMenuOpen(false);
+                }}
+                className="px-4 py-3 text-left text-white text-sm font-semibold hover:bg-white/10 rounded-lg transition-all"
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className="px-4 py-3 text-white text-sm font-semibold hover:bg-white/10 rounded-lg transition-all"
+              >
+                Entrar
+              </Link>
+              <Link
+                to="/cadastro"
+                onClick={() => setMenuOpen(false)}
+                className="px-4 py-3 bg-park-yellow hover:bg-yellow-400 text-park-blue-dark text-sm font-bold rounded-lg transition-all text-center"
+              >
+                Cadastrar
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>

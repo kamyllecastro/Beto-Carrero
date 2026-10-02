@@ -6,6 +6,8 @@ import RideDetail from './pages/RideDetail';
 import Ranking from './pages/Ranking';
 import Reviews from './pages/Reviews';
 import About from './pages/About';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +20,8 @@ export const router = createBrowserRouter([
       { path: 'ranking', Component: Ranking },
       { path: 'avaliacoes', Component: Reviews },
       { path: 'sobre', Component: About },
+      { path: 'login', Component: Login },
+      { path: 'cadastro', Component: Register },
       { path: '*', Component: Home },
     ],
   },

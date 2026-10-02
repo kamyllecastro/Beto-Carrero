@@ -9,14 +9,13 @@ const ageGroups = ['Menos de 18', '18-24', '25-34', '35-44', '45-54', '55+'];
 
 export default function RideDetail() {
   const { id } = useParams<{ id: string }>();
-  const { getRideById, getRideReviews, addReview } = useApp();
+  const { getRideById, getRideReviews, addReview, user } = useApp();
 
   const ride = getRideById(id!);
   const rideReviews = getRideReviews(id!);
 
   const [formRating, setFormRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [userName, setUserName] = useState('');
   const [ageGroup, setAgeGroup] = useState('');
   const [wouldReturn, setWouldReturn] = useState<boolean | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -34,14 +33,17 @@ export default function RideDetail() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!user) {
+      setFormError('Faça login para avaliar.');
+      return;
+    }
     if (formRating === 0) { setFormError('Selecione uma nota de 1 a 5 estrelas.'); return; }
     if (!comment.trim()) { setFormError('Escreva um comentário.'); return; }
-    if (!userName.trim()) { setFormError('Informe seu nome.'); return; }
     if (wouldReturn === null) { setFormError('Informe se voltaria a andar.'); return; }
 
     addReview({
-      rideId: ride.id,
-      userName: userName.trim(),
+      rideId: ride!.id,
+      userName: user.name,
       rating: formRating,
       comment: comment.trim(),
       ageGroup: ageGroup || undefined,
@@ -51,7 +53,6 @@ export default function RideDetail() {
     setSubmitted(true);
     setFormRating(0);
     setComment('');
-    setUserName('');
     setAgeGroup('');
     setWouldReturn(null);
     setFormError('');
@@ -189,14 +190,29 @@ export default function RideDetail() {
               ✍️ Avaliar esta atração
             </h2>
 
-            {submitted && (
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-5 text-green-700 text-sm font-semibold flex items-center gap-2">
-                <span>✅</span>
-                <span>Avaliação enviada com sucesso! Obrigado!</span>
+            {!user ? (
+              <div className="text-center py-8">
+                <div className="text-5xl mb-4">🔐</div>
+                <p className="text-gray-600 font-semibold mb-4">
+                  Faça login para avaliar esta atração
+                </p>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 bg-park-blue hover:bg-park-blue-dark text-white font-bold px-6 py-3 rounded-xl transition-colors"
+                >
+                  Fazer login
+                </Link>
               </div>
-            )}
+            ) : (
+              <>
+                {submitted && (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-5 text-green-700 text-sm font-semibold flex items-center gap-2">
+                    <span>✅</span>
+                    <span>Avaliação enviada com sucesso! Obrigado!</span>
+                  </div>
+                )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
                   Sua nota *
@@ -206,19 +222,6 @@ export default function RideDetail() {
                   size="xl"
                   interactive
                   onChange={setFormRating}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Seu nome *
-                </label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Ex: Maria Silva"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-park-blue/30 focus:border-park-blue text-sm font-medium"
                 />
               </div>
 
@@ -292,6 +295,8 @@ export default function RideDetail() {
                 Enviar avaliação ⭐
               </button>
             </form>
+              </>
+            )}
           </div>
         </section>
       </div>
