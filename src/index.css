@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+
+  --color-park-blue: #1D4ED8;
+  --color-park-blue-dark: #1E3A8A;
+  --color-park-blue-light: #DBEAFE;
+  --color-park-red: #DC2626;
+  --color-park-red-light: #FEE2E2;
+  --color-park-yellow: #F59E0B;
+  --color-park-yellow-light: #FEF3C7;
+  --color-park-surface: #F0F4FF;
+}
+
+html {
+  font-family: 'Nunito', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F0F4FF;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #93C5FD;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1D4ED8;
+}
